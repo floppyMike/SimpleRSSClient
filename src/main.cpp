@@ -18,7 +18,7 @@ wxIMPLEMENT_APP(Core);
 
 /*
 1. Create Window                        -> Done
-2. Read configuration from file (XML)	-> 
+2. Read configuration from file (XML)	-> Done
 3. Load file of the internet
 4. Assign to correct values
 5. Display the values

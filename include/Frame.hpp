@@ -42,17 +42,15 @@ public:
 			return;
 
 		m_confs.emplace_back();
-		if (!parse_config(open_file.GetPath(), &m_confs.back()))
+		if (!m_confs.back().load(open_file.GetPath()))
 		{
 			wxLogError("Cannot open file at: %s.", open_file.GetPath());
 			return;
 		}
-
-
-
-        return;
 	}
 
+	void on_refresh() {}
+
 private:
-	std::vector<XMLConfig> m_confs;
+	std::vector<XMLStructure> m_confs;
 };
