@@ -1,6 +1,17 @@
-#include <iostream>
+#include <wx/wxprec.h>
+#include <wx/app.h>
 
-#include <asio.hpp>
-#include <rapidxml.hpp>
+#include "Frame.hpp"
 
-int main() { return 0; }
+class Core : public wxApp
+{
+public:
+	auto OnInit() -> bool final
+	{
+		auto *f = new Frame();
+		f->Show();
+		return true;
+	}
+};
+
+wxIMPLEMENT_APP(Core);
