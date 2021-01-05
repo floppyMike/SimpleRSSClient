@@ -12,38 +12,20 @@ class RSSList
 {
 public:
 	static constexpr auto COLUMNS =
-		std::array{ std::pair<const char *, int>{ "Source", 100 }, std::pair<const char *, int>{ "Heading", 150 },
-					std::pair<const char *, int>{ "Date", 50 } };
+		std::array{ std::pair<const char *, float>{ "Source", .25F }, std::pair<const char *, float>{ "Heading", .5F },
+					std::pair<const char *, float>{ "Date", .25F } };
 
 	void init(wxPanel *top_panel, wxSizer *top_sizer)
 	{
 		// Create pane with list
-		m_item_list = new wxListCtrl(top_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
+		m_item_list =
+			new wxListCtrl(top_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_ALIGN_LEFT);
 
 		// Add columns
 		for (size_t i = 0; i < COLUMNS.size(); ++i)
 		{
-			wxListItem c;
-			c.SetId(i);
-			c.SetText(_(COLUMNS[i].first));
-			c.SetWidth(COLUMNS[i].second);
-			m_item_list->InsertColumn(i, c);
-		}
-
-		const int item_amount = 10;
-		for (int n = 0; n < item_amount; n++)
-		{
-			wxListItem item;
-			item.SetId(n);
-			item.SetText("Ass");
-
-			m_item_list->InsertItem(item);
-
-			// set value in second column
-			m_item_list->SetItem(n, 1, "ass");
-
-			// set value in third column
-			m_item_list->SetItem(n, 2, "Noice");
+			m_item_list->InsertColumn(i, _(COLUMNS[i].first), wxLIST_FORMAT_LEFT,
+									  m_item_list->GetSize().x * COLUMNS[i].second);
 		}
 
 		top_sizer->Add(m_item_list, 1, wxEXPAND | wxALL, 10);
