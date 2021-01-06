@@ -11,6 +11,7 @@
 #include "XMLDoc.hpp"
 #include "List.hpp"
 #include "View.hpp"
+#include "Net.hpp"
 
 enum
 {
@@ -53,18 +54,21 @@ public:
 		if (open_file.ShowModal() == wxID_CANCEL)
 			return;
 
-		m_confs.emplace_back();
-		if (!m_confs.back().load(open_file.GetPath()))
+		m_data.emplace_back();
+		if (!FileData::load(open_file.GetPath(), &m_data.back().config))
 		{
 			wxLogError("Cannot open file at: %s.", open_file.GetPath());
 			return;
 		}
+
+		refresh(m_data.size() - 1);
 	}
 
-	// void on_refresh() {}
+	void refresh(int pos) { parse_web(&m_data[pos]); }
 
 private:
-	std::vector<XMLStructure> m_confs;
-	RSSList					  m_list;
-	View					  m_view;
+	std::vector<Data> m_data;
+
+	RSSList m_list;
+	View	m_view;
 };

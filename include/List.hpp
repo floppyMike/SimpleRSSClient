@@ -8,6 +8,8 @@
 #include <array>
 #include <utility>
 
+#include "XMLDoc.hpp"
+
 class RSSList
 {
 public:
@@ -30,6 +32,7 @@ public:
 
 		top_sizer->Add(m_item_list, 1, wxEXPAND | wxALL, 10);
 	}
+
 
 private:
 	wxListCtrl *m_item_list;

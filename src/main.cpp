@@ -1,3 +1,5 @@
+#define WXDEBUG true
+
 #include <wx/wxprec.h>
 #include <wx/app.h>
 
