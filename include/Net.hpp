@@ -23,7 +23,6 @@ public:
 		, m_d(d)
 		, m_item(_recurse_(m_xml->GetRoot(), d->item.c_str().AsChar()))
 	{
-		//m_item = find_node(m_item, m_d->item);
 	}
 
 	auto title() { return _direct_(m_d->title); }
@@ -38,14 +37,16 @@ public:
 		for (auto *n = m_item->GetChildren(); n; n = n->GetNext())
 			for (size_t i = 0; i < 5; ++i)
 				if (n->GetName() == ((wxString *)m_d)[i + 5])
-                {
+				{
 					((wxString *)d)[i] = n->GetNodeContent();
-                    break;
-                }
+					break;
+				}
 
 		m_item = m_item->GetNext();
 		return true;
 	}
+
+	auto item_available() -> bool { return m_item; }
 
 private:
 	wxXmlDocument *m_xml;
@@ -73,22 +74,24 @@ private:
 
 auto parse_web(Data *data)
 {
+	// Get query
 	wxURL q(data->config.url);
 	if (q.GetError() != wxURL_NOERR)
 		return false;
 
 	wxInputStream *in = q.GetInputStream();
 
+	// Parse XML
 	wxXmlDocument xml;
 	xml.Load(*in);
-	// xml.Save("arpa.xml");
 	XMLParser parser(&xml, &data->config);
 
+	// Extract relevant content
 	data->content.title = parser.title();
 	data->content.desc	= parser.descr();
 	data->content.image = parser.image();
 
-	while (parser.next_item(&data->content.items.emplace_back()))
-		;
-    return true;
+	while (parser.item_available()) parser.next_item(&data->content.items.emplace_back());
+
+	return true;
 }

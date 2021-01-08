@@ -38,8 +38,8 @@ public:
 			wxListItem item;
 			item.SetId(m_n);
 			item.SetText(i.date);
-			m_item_list->InsertItem(item);
 
+			m_item_list->InsertItem(item);
 			m_item_list->SetItem(m_n, 1, i.title);
 			m_item_list->SetItem(m_n, 2, d->content.title);
 
