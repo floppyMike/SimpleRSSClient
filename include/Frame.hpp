@@ -64,7 +64,11 @@ public:
 		refresh(m_data.size() - 1);
 	}
 
-	void refresh(int pos) { parse_web(&m_data[pos]); }
+	void refresh(int pos)
+	{
+		parse_web(&m_data[pos]);
+		m_list.update(&m_data[pos]);
+	}
 
 private:
 	std::vector<Data> m_data;

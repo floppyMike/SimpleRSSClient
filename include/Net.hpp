@@ -68,18 +68,6 @@ private:
 			return target;
 
 		return _recurse_(t, str.substr(pos + 1));
-
-		// for (wxXmlNode *n = target; true;)
-		// {
-		// 	const auto fh = str.substr(str.find(' '));
-
-		// 	if (auto *const t = find_node(n, fh.data()); t == n)
-		// 		return n;
-		// 	else
-		// 		n = t;
-
-		// 	str = str.substr(fh.size() + 2);
-		// }
 	}
 };
 

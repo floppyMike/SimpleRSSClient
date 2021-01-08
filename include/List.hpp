@@ -14,8 +14,8 @@ class RSSList
 {
 public:
 	static constexpr auto COLUMNS =
-		std::array{ std::pair<const char *, float>{ "Source", .25F }, std::pair<const char *, float>{ "Heading", .5F },
-					std::pair<const char *, float>{ "Date", .25F } };
+		std::array{ std::pair<const char *, float>{ "Date", .25F }, std::pair<const char *, float>{ "Heading", .5F },
+					std::pair<const char *, float>{ "Source", .25F } };
 
 	void init(wxPanel *top_panel, wxSizer *top_sizer)
 	{
@@ -25,15 +25,29 @@ public:
 
 		// Add columns
 		for (size_t i = 0; i < COLUMNS.size(); ++i)
-		{
 			m_item_list->InsertColumn(i, _(COLUMNS[i].first), wxLIST_FORMAT_LEFT,
 									  m_item_list->GetSize().x * COLUMNS[i].second);
-		}
 
 		top_sizer->Add(m_item_list, 1, wxEXPAND | wxALL, 10);
 	}
 
+	void update(Data *d)
+	{
+		for (const auto &i : d->content.items)
+		{
+			wxListItem item;
+			item.SetId(m_n);
+			item.SetText(i.date);
+			m_item_list->InsertItem(item);
+
+			m_item_list->SetItem(m_n, 1, i.title);
+			m_item_list->SetItem(m_n, 2, d->content.title);
+
+			++m_n;
+		}
+	}
 
 private:
 	wxListCtrl *m_item_list;
+	size_t		m_n = 0;
 };
