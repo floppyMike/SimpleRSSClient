@@ -8,46 +8,66 @@
 #include <array>
 #include <utility>
 
-#include "XMLDoc.hpp"
+#include "Data.hpp"
 
-class RSSList
+enum
+{
+	LIST_CTRL = 1000
+};
+
+class RSSList : public wxListCtrl
 {
 public:
 	static constexpr auto COLUMNS =
 		std::array{ std::pair<const char *, float>{ "Date", .25F }, std::pair<const char *, float>{ "Heading", .5F },
 					std::pair<const char *, float>{ "Source", .25F } };
 
-	void init(wxPanel *top_panel, wxSizer *top_sizer)
+	explicit RSSList(const RSSDB *db, wxPanel *top_panel, wxSizer *top_sizer)
+		: wxListCtrl(top_panel, LIST_CTRL, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_ALIGN_LEFT)
+		, m_db(db)
 	{
-		// Create pane with list
-		m_item_list =
-			new wxListCtrl(top_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_ALIGN_LEFT);
-
 		// Add columns
 		for (size_t i = 0; i < COLUMNS.size(); ++i)
-			m_item_list->InsertColumn(i, _(COLUMNS[i].first), wxLIST_FORMAT_LEFT,
-									  m_item_list->GetSize().x * COLUMNS[i].second);
+			InsertColumn(i, _(COLUMNS[i].first), wxLIST_FORMAT_LEFT, GetSize().x * COLUMNS[i].second);
 
-		top_sizer->Add(m_item_list, 1, wxEXPAND | wxALL, 10);
+		top_sizer->Add(this, 1, wxEXPAND | wxALL, 10);
 	}
 
-	void update(Data *d)
+	void push_set(Data *d)
 	{
+		size_t n = m_start.back();
+
 		for (const auto &i : d->content.items)
 		{
 			wxListItem item;
-			item.SetId(m_n);
+			item.SetId(n);
 			item.SetText(i.date);
 
-			m_item_list->InsertItem(item);
-			m_item_list->SetItem(m_n, 1, i.title);
-			m_item_list->SetItem(m_n, 2, d->content.title);
+			InsertItem(item);
+			SetItem(n, 1, i.title);
+			SetItem(n, 2, d->content.title);
 
-			++m_n;
+			++n;
 		}
+
+		m_start.emplace_back(n);
 	}
 
+	template<typename Iter>
+	void rebuild(const Iter begin,
+				 const Iter end) requires std::same_as<typename std::iterator_traits<Iter>::value_type, Data>
+	{
+		DeleteAllItems();
+		m_start = { 0 };
+		for (size_t i = 0; i < std::distance(begin, end); ++i) push_set(&*(begin + i));
+	}
+
+	void on_col_beg_drag(wxListEvent &e) { e.Veto(); }
+
 private:
-	wxListCtrl *m_item_list;
-	size_t		m_n = 0;
+	const RSSDB *		m_db;
+	std::vector<size_t> m_start = { 0 };
+
+	wxDECLARE_NO_COPY_CLASS(RSSList);
+	wxDECLARE_EVENT_TABLE();
 };

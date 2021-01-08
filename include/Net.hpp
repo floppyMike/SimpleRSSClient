@@ -29,11 +29,9 @@ public:
 	auto descr() { return _direct_(m_d->desc); }
 	auto image() { return _direct_(m_d->image); }
 
-	auto next_item(ItemData *d) -> bool
+	void next_item(ItemData *d)
 	{
-		if (!m_item)
-			return false;
-
+        // Iterate all till found
 		for (auto *n = m_item->GetChildren(); n; n = n->GetNext())
 			for (size_t i = 0; i < 5; ++i)
 				if (n->GetName() == ((wxString *)m_d)[i + 5])
@@ -43,7 +41,6 @@ public:
 				}
 
 		m_item = m_item->GetNext();
-		return true;
 	}
 
 	auto item_available() -> bool { return m_item; }
@@ -61,14 +58,14 @@ private:
 
 	auto _recurse_(wxXmlNode *target, const wxString &str) -> wxXmlNode *
 	{
-		size_t pos = str.find(' ');
+		size_t pos = str.find(' '); // Get XML item
 		wxLogDebug("Finding %s in %s", str.substr(0, pos), target->GetName());
-		auto *const t = find_node(target->GetChildren(), str.substr(0, pos));
+		auto *const t = find_node(target->GetChildren(), str.substr(0, pos)); // Search node name in dir
 
-		if (!t)
+		if (!t) // Empty -> previous node is target node
 			return target;
 
-		return _recurse_(t, str.substr(pos + 1));
+		return _recurse_(t, str.substr(pos + 1)); // Tail recurse
 	}
 };
 

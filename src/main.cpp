@@ -2,8 +2,13 @@
 
 #include <wx/wxprec.h>
 #include <wx/app.h>
+#include <wx/event.h>
 
 #include "Frame.hpp"
+
+wxBEGIN_EVENT_TABLE(RSSList, wxListCtrl)
+    EVT_LIST_COL_BEGIN_DRAG(LIST_CTRL, RSSList::on_col_beg_drag)
+wxEND_EVENT_TABLE()
 
 class Core : public wxApp
 {

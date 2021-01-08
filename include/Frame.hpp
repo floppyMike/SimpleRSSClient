@@ -15,7 +15,8 @@
 
 enum
 {
-	ID_FIND_CONFIG = 1
+	ID_FIND_CONFIG = 1,
+	ID_REFRESH
 };
 
 class Frame : public wxFrame
@@ -25,17 +26,20 @@ public:
 		: wxFrame(nullptr, wxID_ANY, "RSS Client", wxPoint(50, 50), wxSize(800, 600))
 	{
 		// Initialize Menu
-		wxMenu *find_config = new wxMenu();
-		find_config->Append(ID_FIND_CONFIG, "&Open config...\tCtrl-H", "Open a configuration file");
+		wxMenu *config_tab = new wxMenu();
+		config_tab->Append(ID_FIND_CONFIG, "&Open config...\tCtrl-H", "Open a configuration file");
+		config_tab->Append(ID_REFRESH, "&Refresh\tCtrl-r", "Refresh list");
 
 		wxMenuBar *bar = new wxMenuBar();
-		bar->Append(find_config, "&Config");
+		bar->Append(config_tab, "&Config");
 
 		SetMenuBar(bar);
 
 		CreateStatusBar();
 		Bind(
 			wxEVT_MENU, [this](auto &e) { on_config_open(e); }, ID_FIND_CONFIG);
+		Bind(
+			wxEVT_MENU, [this](auto &e) { on_refresh(e); }, ID_REFRESH);
 
 		// Create Layout
 		wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -43,7 +47,7 @@ public:
 		pane->SetSizer(sizer);
 
 		// Initialize components
-		m_list.init(pane, sizer);
+		m_list = new RSSList(&m_data, pane, sizer);
 		m_view.init(pane, sizer);
 	}
 
@@ -64,15 +68,16 @@ public:
 		refresh(m_data.size() - 1);
 	}
 
+	void on_refresh(wxCommandEvent &e) { m_list->rebuild(m_data.begin(), m_data.end()); }
+
 	void refresh(int pos)
 	{
 		parse_web(&m_data[pos]);
-		m_list.update(&m_data[pos]);
+		m_list->push_set(&m_data[pos]);
 	}
 
 private:
-	std::vector<Data> m_data;
-
-	RSSList m_list;
-	View	m_view;
+	RSSDB	 m_data;
+	RSSList *m_list;
+	View	 m_view;
 };
