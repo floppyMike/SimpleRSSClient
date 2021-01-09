@@ -1,5 +1,6 @@
 #pragma once
 
+#include <wx/log.h>
 #include <wx/sizer.h>
 #include <wx/panel.h>
 #include <wx/listctrl.h>
@@ -9,6 +10,7 @@
 #include <utility>
 
 #include "Data.hpp"
+#include "View.hpp"
 
 enum
 {
@@ -63,9 +65,20 @@ public:
 	}
 
 	void on_col_beg_drag(wxListEvent &e) { e.Veto(); }
+	void on_select(wxListEvent &e)
+	{
+		const auto i =
+			std::find_if(m_start.begin(), m_start.end(), [idx = e.m_itemIndex](size_t i) { return i > idx; }) - 1;
+		const auto &d = (*m_db)[std::distance(m_start.begin(), i)];
+
+		wxLogDebug("Selected %s with %s.", d.content.title, d.content.items[e.m_itemIndex - *i].title);
+
+
+	}
 
 private:
 	const RSSDB *		m_db;
+	View *				m_view;
 	std::vector<size_t> m_start = { 0 };
 
 	wxDECLARE_NO_COPY_CLASS(RSSList);
