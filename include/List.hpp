@@ -24,9 +24,10 @@ public:
 		std::array{ std::pair<const char *, float>{ "Date", .25F }, std::pair<const char *, float>{ "Heading", .5F },
 					std::pair<const char *, float>{ "Source", .25F } };
 
-	explicit RSSList(const RSSDB *db, wxPanel *top_panel, wxSizer *top_sizer)
+	explicit RSSList(const RSSDB *db, View *v, wxPanel *top_panel, wxSizer *top_sizer)
 		: wxListCtrl(top_panel, LIST_CTRL, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_ALIGN_LEFT)
 		, m_db(db)
+        , m_view(v)
 	{
 		// Add columns
 		for (size_t i = 0; i < COLUMNS.size(); ++i)
@@ -73,7 +74,7 @@ public:
 
 		wxLogDebug("Selected %s with %s.", d.content.title, d.content.items[e.m_itemIndex - *i].title);
 
-
+        m_view->show(&d.content.items[e.m_itemIndex - *i]);
 	}
 
 private:

@@ -23,7 +23,7 @@ class Frame : public wxFrame
 {
 public:
 	Frame()
-		: wxFrame(nullptr, wxID_ANY, "RSS Client", wxPoint(50, 50), wxSize(800, 600))
+		: wxFrame(nullptr, wxID_ANY, "RSS Client", wxDefaultPosition, wxSize(800, 600))
 	{
 		// Initialize Menu
 		wxMenu *config_tab = new wxMenu();
@@ -44,11 +44,12 @@ public:
 		// Create Layout
 		wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
 		wxPanel *	pane  = new wxPanel(this);
-		pane->SetSizer(sizer);
 
 		// Initialize components
-		m_list = new RSSList(&m_data, pane, sizer);
+		m_list = new RSSList(&m_data, &m_view, pane, sizer);
 		m_view.init(pane, sizer);
+
+		pane->SetSizer(sizer);
 	}
 
 	void on_config_open(wxCommandEvent &e)

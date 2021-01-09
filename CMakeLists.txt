@@ -6,7 +6,7 @@ enable_testing()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 
-find_package(wxWidgets REQUIRED COMPONENTS core base gl xml net)
+find_package(wxWidgets REQUIRED COMPONENTS core base gl xml net adv)
 include(${wxWidgets_USE_FILE})
 
 find_package(Asio REQUIRED)
