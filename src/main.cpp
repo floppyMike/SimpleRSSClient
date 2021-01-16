@@ -6,10 +6,14 @@
 
 #include "Frame.hpp"
 
+wxBEGIN_EVENT_TABLE(Frame, wxFrame)
+    EVT_SIZE(Frame::on_resize)
+wxEND_EVENT_TABLE() 
+
 wxBEGIN_EVENT_TABLE(RSSList, wxListCtrl)
     EVT_LIST_COL_BEGIN_DRAG(LIST_CTRL, RSSList::on_col_beg_drag)
     EVT_LIST_ITEM_SELECTED(LIST_CTRL, RSSList::on_select)
-wxEND_EVENT_TABLE()
+wxEND_EVENT_TABLE() 
 
 class Core : public wxApp
 {

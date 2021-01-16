@@ -71,6 +71,12 @@ public:
 
 	void on_refresh(wxCommandEvent &e) { m_list->rebuild(m_data.begin(), m_data.end()); }
 
+    void on_resize(wxSizeEvent &e)
+    {
+        m_list->on_resize(e);
+        e.Skip();
+    }
+
 	void refresh(int pos)
 	{
 		parse_web(&m_data[pos]);
@@ -81,4 +87,6 @@ private:
 	RSSDB	 m_data;
 	RSSList *m_list;
 	View	 m_view;
+
+    wxDECLARE_EVENT_TABLE();
 };

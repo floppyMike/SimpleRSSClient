@@ -27,11 +27,11 @@ public:
 	explicit RSSList(const RSSDB *db, View *v, wxPanel *top_panel, wxSizer *top_sizer)
 		: wxListCtrl(top_panel, LIST_CTRL, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_ALIGN_LEFT)
 		, m_db(db)
-        , m_view(v)
+		, m_view(v)
 	{
 		// Add columns
 		for (size_t i = 0; i < COLUMNS.size(); ++i)
-			InsertColumn(i, _(COLUMNS[i].first), wxLIST_FORMAT_LEFT, GetSize().x * COLUMNS[i].second);
+			InsertColumn(i, _(COLUMNS[i].first), wxLIST_FORMAT_LEFT, (GetSize().x - 1) * COLUMNS[i].second);
 
 		top_sizer->Add(this, 1, wxEXPAND | wxALL, 10);
 	}
@@ -66,6 +66,7 @@ public:
 	}
 
 	void on_col_beg_drag(wxListEvent &e) { e.Veto(); }
+
 	void on_select(wxListEvent &e)
 	{
 		const auto i =
@@ -74,7 +75,12 @@ public:
 
 		wxLogDebug("Selected %s with %s.", d.content.title, d.content.items[e.m_itemIndex - *i].title);
 
-        m_view->show(&d.content.items[e.m_itemIndex - *i]);
+		m_view->show(&d.content.items[e.m_itemIndex - *i]);
+	}
+
+	void on_resize(wxSizeEvent &e)
+	{
+		for (size_t i = 0; i < COLUMNS.size(); ++i) this->SetColumnWidth(i, (GetSize().x - 1) * COLUMNS[i].second);
 	}
 
 private:
