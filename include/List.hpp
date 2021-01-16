@@ -31,7 +31,7 @@ public:
 	{
 		// Add columns
 		for (size_t i = 0; i < COLUMNS.size(); ++i)
-			InsertColumn(i, _(COLUMNS[i].first), wxLIST_FORMAT_LEFT, (GetSize().x - 1) * COLUMNS[i].second);
+			InsertColumn(i, _(COLUMNS[i].first), wxLIST_FORMAT_LEFT, GetSize().x * COLUMNS[i].second);
 
 		top_sizer->Add(this, 1, wxEXPAND | wxALL, 10);
 	}
@@ -80,7 +80,7 @@ public:
 
 	void on_resize(wxSizeEvent &e)
 	{
-		for (size_t i = 0; i < COLUMNS.size(); ++i) this->SetColumnWidth(i, (GetSize().x - 1) * COLUMNS[i].second);
+		for (size_t i = 0; i < COLUMNS.size(); ++i) this->SetColumnWidth(i, (e.GetSize().x - 20) / 2 * COLUMNS[i].second);
 	}
 
 private:
